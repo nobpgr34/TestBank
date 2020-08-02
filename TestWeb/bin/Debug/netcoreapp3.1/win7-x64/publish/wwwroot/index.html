@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>bank</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+</head>
+
+<body>
+
+    <h2>bank</h2>
+
+    <div id="errors" class="alert alert-danger" style="display:none;"></div>
+    <div id="amount "></div>
+
+        <input class="bankValue" ></input>
+
+    <button id="GetAccountvalue" class="btn btn-sm btn-primary ">Get Account value</button>
+
+    
+    <form id="userForm">
+        <input type="hidden" name="id" value="0" />
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input class="form-control" name="amount" />
+        </div>
+        <div class="panel-body">
+            <button type="submit" id="debit" value="1" class="btn btn-sm btn-primary">put money</button>
+            <button type="submit" value="0" class="btn btn-sm btn-danger">get money</button>
+           
+        </div>
+
+    </form>
+	 <div class="panel-body">
+	  <label for="amount">transaction id:</label>
+            <input id="transactionid" class="form-control" name="amount" />
+            <button id="gettransactions"  class="btn btn-sm btn-primary">get all transactions </button>
+            <button id="gettransaction"  class="btn btn-sm btn-primary">get   transaction by id</button>
+            
+        </div>
+
+    <table class="table table-condensed table-striped table-bordered">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>type</th>
+                <th>amount</th>
+                <th>date</th>
+
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        function GetBankValue() {
+            $.ajax({
+                url: '/bank/GetBankValue' ,
+                type: 'GET',
+                contentType: "application/json",
+                success: function(value) {
+				console.log(value)
+                   var t=document.querySelector(".bankValue")
+				   t.value=value;
+                }
+            });
+        } // ���������� ������������
+
+		 function GetTransactionById(id) {
+            $.ajax({
+                url: '/bank/GetBankValue' ,
+                type: 'GET',
+                contentType: "application/json",
+                success: function(value) {
+				console.log(value)
+                   var t=document.querySelector(".bankValue")
+				   t.value=value;
+                }
+            });
+        }
+		
+        function Getbooks() {
+            $.ajax({
+                url: '/bank',
+                type: 'GET',
+                contentType: "application/json",
+                success: function(books) {
+                    console.log(books);
+                    var rows = "";
+                    $.each(books, function(index, user) {
+
+                        rows += row(user);
+                    })
+                    $("table tbody").append(rows);
+                }
+            });
+        }
+
+        function GetUser(id) {
+            $.ajax({
+                url: '/api/books/' + id,
+                type: 'GET',
+                contentType: "application/json",
+                success: function(user) {
+                    var form = document.forms["userForm"];
+                    form.elements["id"].value = user.id;
+                    form.elements["name"].value = user.name;
+                    form.elements["author"].value = user.author;
+                    form.elements["year"].value = user.year;
+                    form.elements["rowVersion"].value = user.rowVersion;
+                    console.log(user.rowVersion);
+                }
+            });
+        } // ���������� ������������
+
+        function CreateUser(userAmount, userType) {
+            console.log(JSON.stringify({
+                amount: userAmount,
+                type: userType
+            }));
+            $.ajax({
+                url: "/bank",
+                contentType: "application/json",
+                method: "POST",
+                data: JSON.stringify({
+                    amount: parseInt(userAmount),
+                    type: parseInt(userType)
+                }),
+                success: function(user) {
+                    reset();
+                    console.log(user);;
+                },
+                error: function(jxqr, error, status) {
+                    ajaxError(jxqr, error, status);
+                }
+            })
+        }
+
+        // ��������� ������������               
+
+
+
+        // function EditUser(userId, userName, userAuthor, userYear, userRowVersion) {
+        //     console.log(userRowVersion);
+        //     $.ajax({
+        //         url: "api/books",
+        //         contentType: "application/json",
+        //         method: "PUT",
+        //         data: JSON.stringify({
+        //             id: userId,
+        //             name: userName,
+        //             author: userAuthor,
+        //             year: userYear,
+        //             RowVersion: userRowVersion
+        //         }),
+        //         success: function(user) {
+        //             reset();
+        //             $("tr[data-rowid='" + user.id + "']").replaceWith(row(user));
+        //         },
+        //         error: function(jxqr, error, status) {
+
+        //             ajaxError(jxqr, error, status);
+        //         }
+        //     })
+        // } // ����� �����
+
+        function reset() {
+            var form = document.forms["userForm"];
+            form.reset();
+            form.elements["id"].value = 0;
+        }
+
+
+        var row = function(user) {
+                return "<tr data-rowid='" + user.id + "'><td>" + user.id + "</td>" + "<td>" + user.type + "</td> <td>" + user.amount +
+                    "</td> <td>" + user.date + "</td>" + "</td>" + " < /tr>";
+            } //$(function () {
+
+
+        $("#reset").click(function(e) {
+            e.preventDefault();
+            reset();
+        })
+		
+		$("#GetAccountvalue").click(function(e) {
+            e.preventDefault();
+            GetBankValue();
+        })
+
+		$("#gettransaction").click(function(e) {
+            e.preventDefault();
+			console.log(123);
+			var t=document.querySelector("#transactionid");
+
+var transaction=t.value;
+ console.log(transaction);
+			 $.ajax({
+                url: '/bank/'+transaction,
+                type: 'GET',
+                contentType: "application/json",
+                success: function(transaction) {
+                    console.log(transaction);
+                    var newRow =   row(transaction);;
+                   var t=document.querySelector(".table tbody");
+			t.innerHTML="";
+                    $("table tbody").append(newRow);
+                }
+            });
+        })
+		
+			$("#gettransactions").click(function(e) {
+            e.preventDefault();
+			var t=document.querySelector(".table tbody")
+			t.innerHTML="";
+			Getbooks();
+           
+        })
+
+
+        // $("#debit").on("click", function() {
+
+        //     var f = document.querySelector("#userForm");
+        //     console.log("asd");
+        //     console.log(f);
+
+        // })
+        var val = 0;
+        $(document).ready(function() {
+            console.log('1');
+            $("#userForm button").click(function(ev) {
+                console.log("2");
+                ev.preventDefault()
+                if ($(this).attr("value") == "0") {
+                    val = 0;
+
+                    $("#userForm").submit();
+                }
+                if ($(this).attr("value") == "1") {
+                    val = 1;
+                    $("#userForm").submit();
+
+                }
+            });
+        });
+
+        // $(function() {
+        //     $('button[type="submit"]').on('click', function(e) {
+        //         e.preventDefault();
+        //         var submit_value = $(this).val();
+        //         // jQuery.post(
+        //         //     $(this).attr('action'),
+        //         //     $(this).serialize() + "&submit=" + submit_value,
+        //         //     function(data) {
+        //         //         $('#result').empty().append(data).slideDown();
+        //         //     }
+        //         // );
+        //     });
+        // });
+
+        $("#userForm").submit(function(e) {
+            e.preventDefault();
+            $('#errors').empty();
+            $('#errors').hide();
+            //  console.log(this.elements);
+            var amount = this.elements["amount"].value;
+
+
+            CreateUser(amount, val);
+
+            //  EditUser(id, name, author, year, rawversion);
+        }); // �������� �� ������ ��������
+
+        $("body").on("click", ".editLink", function() {
+                var id = $(this).data("id");
+                GetUser(id);
+            }) // �������� �� ������ �������
+
+
+        //show errors
+        var ajaxError = function(jxqr, error, status) { // ������� json-�������
+                // console.log(jxqr); 
+                //  console.log(error); 
+                console.log(jxqr.responseText);
+
+                console.log(status);
+                if (jxqr.responseText === "") {
+                    $('#errors').append("<h3>" + jxqr.statusText + "</h3>");
+                } else {
+                    var response = JSON.parse(jxqr.responseText); // ��������� ����� ������ ������
+
+                    if (response['']) {
+                        $.each(response[''], function(index, item) {
+                            $('#errors').append("<p>" + item + "</p>");
+                        });
+                    } // ��������� ������ �������� Name
+
+                    if (response['Name']) {
+                        $.each(response['Name'], function(index, item) {
+                            $('#errors').append("<p>" + item + "</p>");
+                        });
+                    } // ��������� ������ �������� author                                                
+                    if (response['Author']) {
+                        $.each(response['Author'], function(index, item) {
+                            $('#errors').append("<p>" + item + "</p>");
+                        });
+                    }
+                }
+                if (response['Year']) {
+                    $.each(response['Year'], function(index, item) {
+                        $('#errors').append("<p>" + item + "</p>");
+                    });
+                }
+                $('#errors').show();
+            }
+            // �������� �������������
+
+
+       
+    </script>
+</body>
+
+</html>
