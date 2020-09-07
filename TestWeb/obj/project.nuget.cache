@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bgmm6i+E26QcIxxyaVlOnbyNI8FdzY6hsYTONFEAf1CHLBPsekbDHRd7yWQoZEuUCuhY1mRUqwdXn7wq5+WWrg==",
+  "dgSpecHash": "r2vKmZIjJ8LWdb4iiZpXN6sf25OQXLB7M0snZjiN8Fi8os/peDwBlrtvBxqTUBDZmp7VjEdTYA5n2PAzpncJkQ==",
   "success": true,
   "projectFilePath": "D:\\RiderProjects\\test\\TestWeb\\TestWeb.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\msk\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\3.1.6\\microsoft.netcore.app.runtime.win-x64.3.1.6.nupkg.sha512",
-    "C:\\Users\\msk\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.1.6\\microsoft.windowsdesktop.app.runtime.win-x64.3.1.6.nupkg.sha512",
-    "C:\\Users\\msk\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\3.1.6\\microsoft.aspnetcore.app.runtime.win-x64.3.1.6.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

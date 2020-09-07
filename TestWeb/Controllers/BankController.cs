@@ -10,33 +10,33 @@ using TestWeb.Models;
 namespace TestWeb.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route ("[controller]")]
     public class BankController : ControllerBase
     {
-        private static readonly List<Transaction> transactionList=new List<Transaction>();
-        private static readonly  Client client=new Client(){Id=1,Name ="Test",Amount = 0};
+        private static readonly List<Transaction> transactionList = new List<Transaction> ();
+        private static readonly Client client = new Client () { Id = 1, Name = "Test", Amount = 0 };
 
         private readonly ILogger<BankController> _logger;
 
-        public BankController(ILogger<BankController> logger)
+        public BankController (ILogger<BankController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<Transaction> Get()
+        public IEnumerable<Transaction> Get ()
         {
             return transactionList;
         }
-		
-		[HttpGet ("{id}")]
+
+        [HttpGet ("{id}")]
         public ActionResult<Transaction> Get (int id)
         {
-            var transaction=transactionList.FirstOrDefault(x => x.Id == id);
-            if (transaction!=null)return transaction;
+            var transaction = transactionList.FirstOrDefault (x => x.Id == id);
+            if (transaction != null) return transaction;
             return BadRequest ();
         }
-        
+
         [HttpPost]
         public IActionResult Post ([FromBody] Transaction transaction)
         {
@@ -46,26 +46,25 @@ namespace TestWeb.Controllers
             }
             transaction.Id = transactionList.Count;
 
-          bool flag = CounterHelper.Countresult(client, transactionList, transaction);
+            bool flag = CounterHelper.Countresult (client, transactionList, transaction);
             if (flag)
             {
                 return Ok (transaction);
             }
             else
             {
-                 return BadRequest();
+                return BadRequest ();
             }
-            
+
         }
-        
+
         [HttpGet]
-        [Route("[action]")]
-        public decimal GetBankValue()
+        [Route ("[action]")]
+        public decimal GetBankValue ()
         {
             // string userInfo = $"Id: {user.Id}  Name: {user.Name}  Age: {user.Age}  HasRight: {user.HasRight}";
             return client.Amount;
         }
-        
-        
+
     }
 }

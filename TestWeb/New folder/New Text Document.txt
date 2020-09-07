@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Компоненты Vue.js</title>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div id="example-3">
+        <button v-on:click="say('hi')">Скажи hi</button>
+        <p>счет {{number}}</p>
+        <button v-on:click="getTransactions()">Get all transactions</button>
+        <!-- <ul>
+            <template v-for="transaction   in transactions">
+              <li>Name: {{transaction.amount}}   Age:  {{transaction.id}} </li>
+             </template>
+        </ul> -->
+        <div id="table">
+            <div class="bootstrap-table">
+                <div class="fixed-table-toolbar">
+                    <div class="bs-bars pull-left"></div>
+                    <div class="columns columns-right btn-group pull-right"> </div>
+                </div>
+                <div class="fixed-table-container" style="padding-bottom: 0px;">
+                    <div class="fixed-table-body">
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th tabindex="0" style="" data-field="id">
+                                        <div class="th-inner both">Item ID</div>
+                                        <div class="fht-cell"></div>
+                                    </th>
+                                    <th tabindex="0" style="" data-field="name">
+                                        <div class="th-inner both">Item Name</div>
+                                        <div class="fht-cell"></div>
+                                    </th>
+                                    <th tabindex="0" style="" data-field="price">
+                                        <div class="th-inner both">Item Price</div>
+                                        <div class="fht-cell"></div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="transaction   in transactions">
+                                    <td> {{transaction.id}} </td>
+                                    <td> {{transaction.amount}}</td>
+                                    <td> {{transaction.type}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div>vue-table</div>
+        <!-- <template>
+            <div style="width: 600px">
+              <vue-table-dynamic :params="params" ref="table"></vue-table-dynamic>
+            </div>
+          </template> -->
+        <button v-on:click="makeTransaction(amount)">makeTransaction</button>
+        <input type="text" v-model="amount" placeholder="amount">
+
+        <!-- <useredit :user.sync="amount"></useredit> -->
+        <!-- <template>
+          <div>
+            <div class="container">
+                <form @submit.prevent="onSubmit">
+                 
+                    <div class="form-group">
+                        <input type="text" v-model="name" placeholder="Name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block btn-lg">Upload File</button>
+                    </div>
+                </form>
+            </div>    
+          </div>
+        </template> -->
+    </div>
+    <div id="app">
+        <h2>Hello, {{name}}</h2>
+        <useredit :user.sync="name"></useredit>
+    </div>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script>
+
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript" src="//unpkg.com/vue@latest/dist/vue.js"></script>
+    <script type="text/javascript" src="//rawgit.com/wenzhixin/vue-bootstrap-table/develop/docs/static/dist/vue-bootstrap-table.js"></script>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script type="module" src="/vue-table-dynamic/dist/index.min.js">
+        export default { name: 'Demo', data() { return { params: { data: [ ['Index', 'Data1', 'Data2', 'Data3'], [1, 'b3ba90', '7c95f7', '9a3853'], [2, 'ec0b78', 'ba045d', 'ecf03c'], [3, '63788d', 'a8c325', 'aab418'] ], header: 'row', border: true } } }, components:
+        { VueTableDynamic } }
+    </script> -->
+    <script>
+        Vue.component('counter', {
+            data: function() {
+                return {
+                    header: 'Counter Program'
+                }
+            },
+            template: '<div><h2>{{header}}</h2></div>'
+        });
+        Vue.component('useredit', {
+            props: ["user"],
+            data: function() {
+                return {
+                    userName: this.user
+                }
+            },
+            template: '<div><input type="text" v-model="userName" v-on:input="onUserChange" /><p>Name: {{userName}}</p></div>',
+            methods: {
+                onUserChange: function() {
+                    this.$emit('update:user', this.user)
+                }
+            }
+        });
+        var v = new Vue({
+            el: '#example-3',
+            data: {
+                number: 1,
+                transactions: [],
+                amount: 10
+            },
+            methods: {
+                getTransactions: function() {
+                    var self = this;
+                    console.log(this)
+                    axios.get("http://localhost:5001/bank").then(response => {
+                        let result = response.data
+                        console.log(result)
+                        this.transactions = result;
+                    })
+                },
+
+                say: function(message) {
+                    //   alert(message)
+                    var self = this;
+                    console.log(this)
+                    axios.get("http://localhost:5001/bank/GetBankValue").then(response => {
+                        let result = response.data
+                        console.log(this.results)
+                        this.number = result;
+                    })
+                },
+                makeTransaction: function(message) {
+                    //   alert(message)
+                    console.log(message);
+                    const str = JSON.stringify({
+
+                        amount: parseInt(message),
+                        type: parseInt(1)
+
+                    });
+
+
+                    // console.log(str);
+                    // axios.post('http://localhost:5001/bank/', str)
+                    //     .then((response) => {
+                    //         console.log(response);
+                    //     })
+                    axios.post('http://localhost:5001/bank/', str, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(function(result) {
+                            console.log(result);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+
+                },
+                onSubmit() {
+                    // upload file
+                    const formData = new FormData()
+                    formData.append('Amount', this.name)
+                    axios.post('http://localhost:5001/bank/', formData, {}).then((res) => {
+                        console.log(res)
+                    })
+                }
+            }
+        })
+
+        new Vue({
+            el: "#app",
+            data: {
+                name: 'Tom'
+            }
+        });
+    </script>
+</body>
+
+</html>
